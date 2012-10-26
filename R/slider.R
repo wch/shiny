@@ -66,7 +66,7 @@ slider <- function(inputId, min, max, value, step = NULL, ...,
     if (range < 2 || hasDecimals(min) || hasDecimals(max))
       step <- range / 250 # ~ one step per pixel
     else
-      step = 1
+      step <- 1
   }
   
   # Default state is to not have ticks
