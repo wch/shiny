@@ -45,13 +45,13 @@ slider <- function(inputId, min, max, value, step = NULL, ...,
   if (!is.numeric(value) || !is.numeric(min) || !is.numeric(max)) 
     stop("min, max, amd value must all be numeric values")
   else if (min(value) < min) 
-    stop(paste("slider initial value", value, 
-               "is less than the specified minimum"))
+    stop("slider initial value ", value,
+         " is less than the specified minimum")
   else if (max(value) > max) 
-    stop(paste("slider initial value", value, 
-               "is greater than the specified maximum"))
+    stop("slider initial value ", value,
+         " is greater than the specified maximum")
   else if (min > max) 
-    stop(paste("slider maximum is greater than minimum"))
+    stop("slider maximum is greater than minimum")
   else if (!is.null(step)) {
     if (!is.numeric(step)) 
       stop("step is not a numeric value")
