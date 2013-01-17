@@ -424,13 +424,6 @@ Observer <- setRefClass(
 #' to other reactive functions. Thus, observers are only useful for their side 
 #' effects (for example, performing I/O).
 #' 
-#' Another contrast between reactive functions and observers is their execution
-#' strategy. Reactive functions use lazy evaluation; that is, when their
-#' dependencies change, they don't re-execute right away but rather wait until
-#' they are called by someone else. Indeed, if they are not called then they
-#' will never re-execute. In contrast, observers use eager evaluation; as soon
-#' as their dependencies change, they schedule themselves to re-execute.
-#' 
 #' @param func The function to observe. It must not have any parameters. Any 
 #'   return value from this function will be ignored.
 #'   
