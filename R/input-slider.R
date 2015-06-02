@@ -118,9 +118,10 @@ sliderInput <- function(inputId, label, min, max, value, step = NULL,
       tags$div(class='slider-animate-container',
         tags$a(href='#',
           class='slider-animate-button',
-          'data-target-id'=inputId,
-          'data-interval'=animate$interval,
-          'data-loop'=animate$loop,
+          'data-target-id' = inputId,
+          'data-interval' = animate$interval,
+          'data-loop' = animate$loop,
+          'data-handle' = animate$handle,
           span(class = 'play', animate$playButton),
           span(class = 'pause', animate$pauseButton)
         )
@@ -137,6 +138,7 @@ sliderInput <- function(inputId, label, min, max, value, step = NULL,
   attachDependencies(sliderTag, dep)
 }
 
+
 hasDecimals <- function(value) {
   truncatedValue <- round(value)
   return (!identical(value, truncatedValue))
@@ -152,14 +154,22 @@ hasDecimals <- function(value) {
 #'   or list of tags (using \code{\link{tag}} and friends), or raw HTML (using
 #'   \code{\link{HTML}}).
 #' @param pauseButton Similar to \code{playButton}, but for the pause button.
+#' @param handle For range sliders (with a low and high value), which handle to
+#'   move when animated. This could be \code{"low"}, \code{"high"}, or
+#'   \code{"both"} (the default). This option is ignored for single-value
+#'   sliders.
 #'
 #' @export
 animationOptions <- function(interval=1000,
                              loop=FALSE,
                              playButton=NULL,
-                             pauseButton=NULL) {
-  list(interval=interval,
-       loop=loop,
-       playButton=playButton,
-       pauseButton=pauseButton)
+                             pauseButton=NULL,
+                             handle = c("both", "low", "high")) {
+  list(
+    interval = interval,
+    loop = loop,
+    playButton = playButton,
+    pauseButton = pauseButton,
+    handle = match.arg(handle)
+  )
 }

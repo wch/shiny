@@ -1839,9 +1839,11 @@ imageOutput <- function(outputId, width = "100%", height="400px",
   )
 
   # Given a named list with options, replace names like "delayType" with
-  # "data-hover-delay-type" (given a prefix "hover")
-  formatOptNames <- function(opts, prefix) {
-    newNames <- paste("data", prefix, names(opts), sep = "-")
+  # "data-delay-type". If prefix="hover", then return "data-hover-delay-type".
+  formatOptNames <- function(opts, prefix = NULL) {
+    # Use c() and collapse, so that we don't get an extra '-' when prefix is NULL
+    prefix <- paste(c("data", prefix), collapse = "-")
+    newNames <- paste(prefix, names(opts), sep = "-")
     # Replace capital letters with "-" and lowercase letter
     newNames <- gsub("([A-Z])", "-\\L\\1", newNames, perl = TRUE)
     names(opts) <- newNames

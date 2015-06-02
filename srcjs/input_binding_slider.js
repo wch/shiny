@@ -92,6 +92,7 @@ $(document).on('click', '.slider-animate-button', function(evt) {
   var loop = self.attr('data-loop') !== undefined &&
              !/^\s*false\s*$/i.test(self.attr('data-loop'));
   var animInterval = self.attr('data-interval');
+  var animHandle = self.data('handle') || 'both';
   if (isNaN(animInterval))
     animInterval = 1500;
   else
@@ -128,27 +129,73 @@ $(document).on('click', '.slider-animate-button', function(evt) {
       // Single sliders have slider.options.type == "single", and only the
       // `from` value is used. Double sliders have type == "double", and also
       // use the `to` value for the right handle.
+      // Also take into account whether left, right or both handles should move.
       var sliderCanStep = function() {
-        if (slider.options.type === "double")
-          return slider.result.to < slider.result.max;
-        else
-          return slider.result.from < slider.result.max;
+        var max  = slider.result.max;
+        var from = slider.result.from;
+        var to   = slider.result.to;
+
+        if (slider.options.type === "double") {
+          if (animHandle === "both" || animHandle === "high")
+            return to < max;
+          else if (animHandle === "low")
+            return from < to;
+
+        } else {
+          return from < max;
+        }
       };
+
       var sliderReset = function() {
-        var val = { from: slider.result.min };
-        // Preserve the current spacing for double sliders
-        if (slider.options.type === "double")
-          val.to = val.from + (slider.result.to - slider.result.from);
+        var min  = slider.result.min;
+        var from = slider.result.from;
+        var to   = slider.result.to;
+
+        var val = {};
+        if (slider.options.type === "double") {
+          if (animHandle === "both") {
+            // When both move, preserve the current spacing
+            val.from = min;
+            val.to = min + (to - from);
+
+          } else if (animHandle === "low") {
+            // When low moves, move it to min value
+            val.from = min;
+
+          } else if (animHandle === "high") {
+            // When high moves, move it to current low value
+            val.to = from;
+          }
+        } else {
+          // When one handle, move it to min value
+          val.from = min;
+        }
 
         slider.update(val);
       };
+
       var sliderStep = function() {
-        // Don't overshoot the end
-        var val = {
-          from: Math.min(slider.result.max, slider.result.from + slider.options.step)
-        };
-        if (slider.options.type === "double")
-          val.to = Math.min(slider.result.max, slider.result.to + slider.options.step);
+        var max  = slider.result.max;
+        var from = slider.result.from;
+        var to   = slider.result.to;
+        var step = slider.options.step;
+
+        // Use Math.min() to make sure we don't overshoot the end
+        var val = {};
+        if (slider.options.type === "double") {
+          if (animHandle === "both") {
+            val.from = Math.min(max, from + step);
+            val.to = Math.min(max, to + step);
+
+          } else if (animHandle === "low") {
+            val.from = Math.min(to, from + step);
+
+          } else if (animHandle === "high") {
+            val.to = Math.min(max, to + step);
+          }
+        } else {
+          val.from = Math.min(max, from + step);
+        }
 
         slider.update(val);
       };
